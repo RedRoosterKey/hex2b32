@@ -75,7 +75,8 @@ Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT
     -e, --input-errors    display first input error and exit with failure
                           (default behavior is to ignore invalid input)
     -h, --help            display this help message and exit
-    -l, --lower           output only lowercase letters
+    -l, --lower           output only lower case letters
+                          (default behavior is all upper case)
     -n, --no-padding      omit trailing '=' symbols
     -v, --version         output version information and exit" '-h'
 testOutput '' "Usage: hex2b32 [OPTION]... 
@@ -84,7 +85,8 @@ Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT
     -e, --input-errors    display first input error and exit with failure
                           (default behavior is to ignore invalid input)
     -h, --help            display this help message and exit
-    -l, --lower           output only lowercase letters
+    -l, --lower           output only lower case letters
+                          (default behavior is all upper case)
     -n, --no-padding      omit trailing '=' symbols
     -v, --version         output version information and exit" '--help'
 

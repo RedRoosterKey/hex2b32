@@ -56,7 +56,8 @@ Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT\n\
     -e, --input-errors    display first input error and exit with failure\n\
                           (default behavior is to ignore invalid input)\n\
     -h, --help            display this help message and exit\n\
-    -l, --lower           output only lowercase letters\n\
+    -l, --lower           output only lower case letters\n\
+                          (default behavior is all upper case)\n\
     -n, --no-padding      omit trailing '=' symbols\n\
     -v, --version         output version information and exit\n\n";
 
