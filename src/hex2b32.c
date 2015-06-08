@@ -1,31 +1,45 @@
-/*
- ==============================================================================
- Name        : hex2b32.c
- Author      : RedRoosterKey
- Version     : 0.0.1
- Copyright   : GNU GENERAL PUBLIC LICENSE, Version 2, June 1991
- Description : Convert hexadecimal into base32 according to RFC 3548.
-
- https://tools.ietf.org/html/rfc3548
-
- Converts 8 bit values into 5 bit values
- Complete cycle occurs every 40 bits
- +-------------+----------------------------------------------+
- | MODE        | 12345678|12345678|12345678|12345678|12345678 |
- +-------------+----------------------------------------------+
- | 0 bits left | 12345   |        |        |        |         |
- | 3 bits left |      123|45      |        |        |         |
- |             |         |  12345 |        |        |         |
- | 1 bit  left |         |       1|2345    |        |         |
- | 4 bits left |         |        |    1234|5       |         |
- |             |         |        |        | 12345  |         |
- | 2 bits left |         |        |        |      12|345      |
- |             |         |        |        |        |   12345 |
- | 0 bits left |         |        |        |        |         |
- +-------------+----------------------------------------------+
- ==============================================================================
+/**
+ * @file    hex2b32.c
+ * @author  RedRoosterKey
+ * @version 0.0.1
+ *
+ * @section LICENSE
+ *
+ * GNU GENERAL PUBLIC LICENSE, Version 2, June 1991
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details at
+ * https://www.gnu.org/copyleft/gpl.html
+ *
+ * @section DESCRIPTION
+ *
+ * Convert hexadecimal into base32 according to RFC 3548.
+ *
+ * https://tools.ietf.org/html/rfc3548
+ *
+ * Converts 8 bit values into 5 bit values
+ * Complete cycle occurs every 40 bits
+ * +-------------+----------------------------------------------+
+ * | MODE        | 12345678|12345678|12345678|12345678|12345678 |
+ * +-------------+----------------------------------------------+
+ * | 0 bits left | 12345   |        |        |        |         |
+ * | 3 bits left |      123|45      |        |        |         |
+ * |             |         |  12345 |        |        |         |
+ * | 1 bit  left |         |       1|2345    |        |         |
+ * | 4 bits left |         |        |    1234|5       |         |
+ * |             |         |        |        | 12345  |         |
+ * | 2 bits left |         |        |        |      12|345      |
+ * |             |         |        |        |        |   12345 |
+ * | 0 bits left |         |        |        |        |         |
+ * +-------------+----------------------------------------------+
  */
-
 #include <ctype.h>
 #include <getopt.h>
 #include <stdbool.h>
@@ -66,6 +80,21 @@ const char BASE_32[] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
 		'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
 		'Z', '2', '3', '4', '5', '6', '7' };
 
+/**
+ * Tries to grab a valid hexadecimal character from STDIN.
+ *
+ * Will store the valid hex character in *ch
+ *
+ * If a non hexadecimal value is retrieved and ignoreInputErrors is set to
+ * false, the function will output a message to STDERR and cause the program
+ * to exit with a failure
+ *
+ * @param ch a pointer to the memory space where the character will be set
+ * @param ignoreInputErrors a flag to indicate if the function should ignore
+ *        input errors or cause the program to fail
+ * @return 0 if ch is set to a valid hexadecimal character
+ *        -1 if we can only get EOF from STDIN
+ */
 int getValidHexCharacter(int * const ch, const bool ignoreInputErrors) {
 	int input;
 	while (EOF != (input = getchar())) {
@@ -87,16 +116,37 @@ int getValidHexCharacter(int * const ch, const bool ignoreInputErrors) {
 	return (-1);
 }
 
-int hexChar2Dec(char c) {
-	c = toupper(c);
-	if ('A' <= c && 'F' >= c) {
-		return (c - 'A' + 10);
-	} else if ('0' <= c && '9' >= c) {
-		return (c - '0');
+/**
+ * Converts a valid hexadecimal character into the decimal equivalent
+ *
+ * Will return -1 if ch is not a valid hexadecimal character
+ *
+ * @param ch the valid hexadecimal character to convert
+ * @return The decimal equivalent of hexadecimal ch or -1 otherwise
+ */
+int hexChar2Dec(char ch) {
+	ch = toupper(ch);
+	if ('A' <= ch && 'F' >= ch) {
+		return (ch - 'A' + 10);
+	} else if ('0' <= ch && '9' >= ch) {
+		return (ch - '0');
 	}
 	return (-1);
 }
 
+/**
+ * Convert the byte and the leftover into as many base32 characters as possible
+ *
+ * @param mode a value indicating how many bits are usable in the leftover.
+ *        This value will be updated when the function is called.
+ * @param leftover contains any leftover bits from the previous operation
+ *        and any unconverted bits after this call will be stored in leftover
+ * @param byte the data to convert (as much as possible) into base32 characters.
+ *        Any bits that are not converted will be stored in leftover.
+ * @param upperCase a flag indicating if the output should be in upper
+ *        or lower case
+ * @return void
+ */
 void processBits(RemainderMode * const mode, unsigned char * const leftover,
 		const unsigned char byte, const bool upperCase) {
 	unsigned char index = 0;
@@ -160,6 +210,17 @@ void processBits(RemainderMode * const mode, unsigned char * const leftover,
 	}
 }
 
+/**
+ * Convert the leftover bits into a base32 character
+ *
+ * @param mode a value indicating how many bits are usable in the leftover.
+ *        This value will be updated when the function is called.
+ * @param leftover contains any leftover bits from the previous conversion
+ * @param padding a flag indicating if the output should have '=' padding
+ * @param upperCase a flag indicating if the output should be in upper
+ *        or lower case
+ * @return void
+ */
 void processLastBits(const RemainderMode * const mode,
 		const unsigned char * const leftover, const bool padding,
 		const bool upperCase) {
@@ -202,18 +263,25 @@ void processLastBits(const RemainderMode * const mode,
 	}
 }
 
+/**
+ * Main!  Handles program arguments and general execution
+ *
+ * @param argc the number of program arguments
+ * @param argv the program arguments
+ * @return 0 for success, any other value indicates failure
+ */
 int main(int argc, char **argv) {
 	bool ignoreInputErrors = true;
 	bool upperCase = true;
 	bool outputPadding = true;
-	static const struct option long_options[] = { { "input-errors", no_argument, 0,
-			'e' }, { "help", no_argument, 0, 'h' }, {"lower", no_argument, 0, 'l'}, { "no-padding", no_argument,
-			0, 'n' }, { "version", no_argument, 0, 'v' }, { 0, 0, 0, 0 } };
+	static const struct option long_options[] = { { "input-errors", no_argument,
+			0, 'e' }, { "help", no_argument, 0, 'h' }, { "lower", no_argument,
+			0, 'l' }, { "no-padding", no_argument, 0, 'n' }, { "version",
+			no_argument, 0, 'v' }, { 0, 0, 0, 0 } };
 
 	// Handle command line options
 	while (1) {
 		int option_index = 0;
-
 		int option = getopt_long(argc, argv, "ehlnv", long_options,
 				&option_index);
 		if (option == -1)
