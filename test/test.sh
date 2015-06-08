@@ -3,6 +3,7 @@ set -e
 # set -v
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+PROGRAM="${DIR}/../Release/hex2b32"
 RED=`tput setaf 1`
 GREEN=`tput setaf 2`
 NC=`tput sgr0`
@@ -11,7 +12,7 @@ function testOutput() {
     in=${1}
     out=${2}
     options=${3}
-    value=`echo -n ${in} | ${DIR}/../Release/hex2b32 ${options}`
+    value=`echo -n ${in} | ${PROGRAM} ${options}`
     if [ "${out}" != "${value}" ]
     then
         echo "${RED}Expected \"${out}\""
@@ -28,7 +29,7 @@ function testErrorOutput() {
     err=${2}
     options=${3}
     set +e
-    value=$((echo -n ${in} | ${DIR}/../Release/hex2b32 ${options}) 2>&1)
+    value=$((echo -n ${in} | ${PROGRAM} ${options}) 2>&1)
     set -e
     if [ "${err}" != "${value}" ]
     then
@@ -47,7 +48,7 @@ function testReturnValue() {
     rVal=${2}
     options=${3}
     set +e
-    echo -n ${in} | ${DIR}/../Release/hex2b32 ${options} > /dev/null 2>&1
+    echo -n ${in} | ${PROGRAM} ${options} > /dev/null 2>&1
     value=$?
     set -e
     if [ "${rVal}" != "${value}" ]
