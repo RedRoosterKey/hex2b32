@@ -1,12 +1,29 @@
 /*
- ============================================================================
+ ==============================================================================
  Name        : hex2b32.c
  Author      : RedRoosterKey
- Version     :
- Copyright   : 
+ Version     : 0.0.1
+ Copyright   : GNU GENERAL PUBLIC LICENSE, Version 2, June 1991
  Description : Convert hexadecimal into base32 according to RFC 3548.
+
  https://tools.ietf.org/html/rfc3548
- ============================================================================
+
+ Converts 8 bit values into 5 bit values
+ Complete cycle occurs every 40 bits
+ +-------------+----------------------------------------------+
+ | MODE        | 12345678|12345678|12345678|12345678|12345678 |
+ +-------------+----------------------------------------------+
+ | 0 bits left | 12345   |        |        |        |         |
+ | 3 bits left |      123|45      |        |        |         |
+ |             |         |  12345 |        |        |         |
+ | 1 bit  left |         |       1|2345    |        |         |
+ | 4 bits left |         |        |    1234|5       |         |
+ |             |         |        |        | 12345  |         |
+ | 2 bits left |         |        |        |      12|345      |
+ |             |         |        |        |        |   12345 |
+ | 0 bits left |         |        |        |        |         |
+ +-------------+----------------------------------------------+
+ ==============================================================================
  */
 
 #include <ctype.h>
@@ -16,23 +33,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-/**
- * Converts 8 bit values into 5 bit values
- * Complete cycle occurs every 40 bits
- * +-------------+----------------------------------------------+
- * | MODE        | 12345678|12345678|12345678|12345678|12345678 |
- * +-------------+----------------------------------------------+
- * | 0 bits left | 12345   |        |        |        |         |
- * | 3 bits left |      123|45      |        |        |         |
- * |             |         |  12345 |        |        |         |
- * | 1 bit  left |         |       1|2345    |        |         |
- * | 4 bits left |         |        |    1234|5       |         |
- * |             |         |        |        | 12345  |         |
- * | 2 bits left |         |        |        |      12|345      |
- * |             |         |        |        |        |   12345 |
- * | 0 bits left |         |        |        |        |         |
- * +-------------+----------------------------------------------+
- */
+const char * VERSION = "0.0.1";
+
+const char * HELP =
+		"Usage: hex2b32 [OPTION]... \n\
+Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT\n\
+\n\
+    -e, --input-errors    display first input error and exit with failure\n\
+                          (default behavior is to ignore invalid input)\n\
+    -h, --help            display this help message and exit\n\
+    -l, --lower           output only lowercase letters\n\
+    -n, --no-padding      omit trailing '=' symbols\n\
+    -v, --version         output version information and exit\n\n";
 
 // Indicating how many bits are in the leftover
 typedef enum {
@@ -86,46 +98,62 @@ int hexChar2Dec(char c) {
 }
 
 void processBits(RemainderMode * const mode, unsigned char * const leftover,
-		const unsigned char byte) {
+		const unsigned char byte, const bool upperCase) {
 	unsigned char index = 0;
 	switch (*mode) {
 	case NO_BITS_LEFT:
 		index = (FIRST_FIVE_BITS & byte) >> 3;
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		*leftover = byte << 5;
 		*mode = THREE_BITS_LEFT;
 		break;
 	case THREE_BITS_LEFT:
 		index = ((FIRST_THREE_BITS & *leftover) >> 3)
 				| ((FIRST_TWO_BITS & byte) >> 6);
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		index = (THIRD_TO_SEVENTH_BITS & byte) >> 1;
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		*leftover = byte << 7;
 		*mode = ONE_BIT_LEFT;
 		break;
 	case ONE_BIT_LEFT:
 		index = ((FIRST_BIT & *leftover) >> 3)
 				| ((FIRST_FOUR_BITS & byte) >> 4);
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		*leftover = byte << 4;
 		*mode = FOUR_BITS_LEFT;
 		break;
 	case FOUR_BITS_LEFT:
 		index = ((FIRST_FOUR_BITS & *leftover) >> 3)
 				| ((FIRST_BIT & byte) >> 7);
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		index = (SECOND_TO_SIXTH_BITS & byte) >> 2;
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		*leftover = byte << 6;
 		*mode = TWO_BITS_LEFT;
 		break;
 	case TWO_BITS_LEFT:
 		index = ((FIRST_TWO_BITS & *leftover) >> 3)
 				| ((FIRST_THREE_BITS & byte) >> 5);
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		index = (LAST_FIVE_BITS & byte);
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		*leftover = 0;
 		*mode = NO_BITS_LEFT;
 		break;
@@ -133,32 +161,41 @@ void processBits(RemainderMode * const mode, unsigned char * const leftover,
 }
 
 void processLastBits(const RemainderMode * const mode,
-		const unsigned char * const leftover, const bool padding) {
+		const unsigned char * const leftover, const bool padding,
+		const bool upperCase) {
 	unsigned char index = 0;
 	switch (*mode) {
 	case NO_BITS_LEFT:
 		break;
 	case THREE_BITS_LEFT:
 		index = ((FIRST_THREE_BITS & *leftover) >> 5 << 2);
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		if (padding)
 			printf("======");
 		break;
 	case ONE_BIT_LEFT:
 		index = ((FIRST_BIT & *leftover) >> 7 << 4);
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		if (padding)
 			printf("====");
 		break;
 	case FOUR_BITS_LEFT:
 		index = ((FIRST_FOUR_BITS & *leftover) >> 4 << 1);
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		if (padding)
 			printf("===");
 		break;
 	case TWO_BITS_LEFT:
 		index = ((FIRST_TWO_BITS & *leftover) >> 6 << 3);
-		putchar(BASE_32[(int) index]);
+		putchar(
+				upperCase ?
+						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		if (padding)
 			putchar('=');
 		break;
@@ -166,18 +203,18 @@ void processLastBits(const RemainderMode * const mode,
 }
 
 int main(int argc, char **argv) {
-
-	bool outputPadding = true;
 	bool ignoreInputErrors = true;
-	static struct option long_options[] = { { "input-errors", no_argument, 0,
-			'e' }, { "help", no_argument, 0, 'h' }, { "no-padding", no_argument,
-			0, 'n' }, { 0, 0, 0, 0 } };
+	bool upperCase = true;
+	bool outputPadding = true;
+	static const struct option long_options[] = { { "input-errors", no_argument, 0,
+			'e' }, { "help", no_argument, 0, 'h' }, {"lower", no_argument, 0, 'l'}, { "no-padding", no_argument,
+			0, 'n' }, { "version", no_argument, 0, 'v' }, { 0, 0, 0, 0 } };
 
 	// Handle command line options
 	while (1) {
 		int option_index = 0;
 
-		int option = getopt_long(argc, argv, "ehn", long_options,
+		int option = getopt_long(argc, argv, "ehlnv", long_options,
 				&option_index);
 		if (option == -1)
 			break;
@@ -186,21 +223,18 @@ int main(int argc, char **argv) {
 			ignoreInputErrors = false;
 			break;
 		case 'h':
-			// Print help
-			printf(
-					"Usage: hex2b32 [OPTION]... \n\
-Converts hexadecimal data from STDIN and outputs the data in base32 (RFC 3548) to STDOUT\n\
-\n\
-  -e, --input-errors       display the first input error and exit with failure (default behavior is to ignore invalid input)\n\
-  -h, --help               display this help message and exit\n\
-  -n, --no-padding         omit trailing '=' symbols\n\
-      --version            output version information and exit\n\
-\n");
+			printf(HELP);
 			return (EXIT_SUCCESS);
+			break;
+		case 'l':
+			upperCase = false;
 			break;
 		case 'n':
 			outputPadding = false;
 			break;
+		case 'v':
+			printf("%s\n", VERSION);
+			return (EXIT_SUCCESS);
 		case '?':
 			printf("Please run with --help for usage options.\n");
 			return (EXIT_FAILURE);
@@ -225,14 +259,14 @@ Converts hexadecimal data from STDIN and outputs the data in base32 (RFC 3548) t
 		c2 = hexChar2Dec(c2);
 		// put these bits into a single byte
 		byte = c2 | (c1 << 4);
-		processBits(&mode, &leftover, byte);
+		processBits(&mode, &leftover, byte, upperCase);
 	}
 	if (-1 != firstEOF && -1 == secondEOF) {
 		fprintf(stderr,
 				"Must provide an even number of hexadecimal characters.\n");
 		return (EXIT_FAILURE);
 	}
-	processLastBits(&mode, &leftover, outputPadding);
+	processLastBits(&mode, &leftover, outputPadding, upperCase);
 	putchar('\n');
 	return (EXIT_SUCCESS);
 }

@@ -42,7 +42,6 @@ function testErrorOutput() {
     return 0
 }
 
-
 function testReturnValue() {
     in=${1}
     rVal=${2}
@@ -70,13 +69,24 @@ testReturnValue 'F' 1
 testErrorOutput 'F' 'Must provide an even number of hexadecimal characters.'
 
 # Test help output
-#testOutput '' "Usage: hex2b32 [OPTION]...
-#Converts hexadecimal data from STDIN and outputs the date in base32 (RFC 3548) so STDOUT.
-#
-#  -n, --no-padding         omit trailing '=' symbols
-#  -h, --help               display this help and exit
-#      --version            output version information and exit
-#" '-h'
+testOutput '' "Usage: hex2b32 [OPTION]... 
+Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT
+
+    -e, --input-errors    display first input error and exit with failure
+                          (default behavior is to ignore invalid input)
+    -h, --help            display this help message and exit
+    -l, --lower           output only lowercase letters
+    -n, --no-padding      omit trailing '=' symbols
+    -v, --version         output version information and exit" '-h'
+testOutput '' "Usage: hex2b32 [OPTION]... 
+Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT
+
+    -e, --input-errors    display first input error and exit with failure
+                          (default behavior is to ignore invalid input)
+    -h, --help            display this help message and exit
+    -l, --lower           output only lowercase letters
+    -n, --no-padding      omit trailing '=' symbols
+    -v, --version         output version information and exit" '--help'
 
 # Test ignoring non-hex data
 testOutput '-0-0---0-0-'  'AAAA===='
@@ -100,6 +110,11 @@ testOutput 'FFFFFF'       '77776'      '-n'
 testOutput 'FFFFFFFF'     '777777Y'    '-n'
 testOutput 'FFFFFFFFFF'   '77777777'   '-n'
 testOutput 'FFFFFFFFFFFF' '7777777774' '-n'
+
+# Test lowercase with short option
+testOutput '223EBB2FF18F01B4605F9CFEEA9D062FDDCC2CEAFF0BA66954929A93BE552F54' 'ei7lwl7rr4a3iyc7tt7ovhigf7o4ylhk74f2m2kusknjhpsvf5ka====' '-l'
+# Test lowercase with long option
+testOutput '223EBB2FF18F01B4605F9CFEEA9D062FDDCC2CEAFF0BA66954929A93BE552F54' 'ei7lwl7rr4a3iyc7tt7ovhigf7o4ylhk74f2m2kusknjhpsvf5ka====' '--lower'
 
 # Test if padding is removed with long option
 testOutput '00'           'AA'         '--no-padding'
