@@ -59,7 +59,7 @@ Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT\n\
     -l, --lower           output only lower case letters\n\
                           (default behavior is all upper case)\n\
     -n, --no-padding      omit trailing '=' symbols\n\
-    -v, --version         output version information and exit\n\n";
+    -v, --version         output version information and exit\n";
 
 // Indicating how many bits are in the leftover
 typedef enum {
@@ -96,8 +96,8 @@ const char BASE_32[] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
  * @return 0 if ch is set to a valid hexadecimal character
  *        -1 if we can only get EOF from STDIN
  */
-int getValidHexCharacter(int * const ch, const bool ignoreInputErrors) {
-	int input;
+short getValidHexCharacter(char * const ch, const bool ignoreInputErrors) {
+	short input;
 	while (EOF != (input = getchar())) {
 		if ('A' <= input && 'F' >= input) {
 			*ch = input;
@@ -125,7 +125,7 @@ int getValidHexCharacter(int * const ch, const bool ignoreInputErrors) {
  * @param ch the valid hexadecimal character to convert
  * @return The decimal equivalent of hexadecimal ch or -1 otherwise
  */
-int hexChar2Dec(char ch) {
+short hexChar2Dec(char ch) {
 	ch = toupper(ch);
 	if ('A' <= ch && 'F' >= ch) {
 		return (ch - 'A' + 10);
@@ -283,7 +283,7 @@ int main(int argc, char **argv) {
 	// Handle command line options
 	while (1) {
 		int option_index = 0;
-		int option = getopt_long(argc, argv, "ehlnv", long_options,
+		short option = getopt_long(argc, argv, "ehlnv", long_options,
 				&option_index);
 		if (option == -1)
 			break;
@@ -292,7 +292,7 @@ int main(int argc, char **argv) {
 			ignoreInputErrors = false;
 			break;
 		case 'h':
-			printf(HELP);
+			printf("%s\n", HELP);
 			return (EXIT_SUCCESS);
 			break;
 		case 'l':
@@ -317,11 +317,11 @@ int main(int argc, char **argv) {
 	// 2 hex characters correspond to 1 byte
 	// padding in base32 only works with bytes
 	// (e.g. you cannot represent just 7 bits in base32)
-	int c1, c2;
+	char c1, c2;
 	c1 = c2 = 0;
 	unsigned char byte, leftover;
 	RemainderMode mode = NO_BITS_LEFT;
-	int firstEOF, secondEOF;
+	short firstEOF, secondEOF;
 	while (-1 != (firstEOF = getValidHexCharacter(&c1, ignoreInputErrors))
 			&& -1 != (secondEOF = getValidHexCharacter(&c2, ignoreInputErrors))) {
 		c1 = hexChar2Dec(c1);
