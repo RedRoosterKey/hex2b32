@@ -4,9 +4,9 @@ set -e
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 PROGRAM="${DIR}/../Release/hex2b32"
-RED=`tput setaf 1`
-GREEN=`tput setaf 2`
-NC=`tput sgr0`
+RED=`tput -Txterm setaf 1`
+GREEN=`tput -Txterm setaf 2`
+NC=`tput -Txterm sgr0`
 
 function testOutput() {
     in=${1}
