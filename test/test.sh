@@ -64,6 +64,10 @@ function testReturnValue() {
 # Test that nothing does nothing
 testOutput ''           ''
 
+testReturnValue '' 1 'non-option'
+testErrorOutput '' 'Non-option arguments are not supported.
+Please run with --help for usage options.' 'non-option'
+
 # Test that program cannot handle just one hex character
 testReturnValue 'F' 1
 testErrorOutput 'F' 'Must provide an even number of hexadecimal characters.'

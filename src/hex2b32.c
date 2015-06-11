@@ -278,7 +278,7 @@ int main(int argc, char **argv) {
 	static const struct option long_options[] = { { "input-errors", no_argument,
 			0, 'e' }, { "help", no_argument, 0, 'h' }, { "lower", no_argument,
 			0, 'l' }, { "no-padding", no_argument, 0, 'n' }, { "version",
-			no_argument, 0, 'v' }, { 0, 0, 0, 0 } };
+	no_argument, 0, 'v' }, { 0, 0, 0, 0 } };
 
 	// Handle command line options
 	while (1) {
@@ -305,13 +305,19 @@ int main(int argc, char **argv) {
 			printf("%s\n", VERSION);
 			return (EXIT_SUCCESS);
 		case '?':
-			printf("Please run with --help for usage options.\n");
+			fprintf(stderr, "Please run with --help for usage options.\n");
 			return (EXIT_FAILURE);
 			break;
 		default:
 			abort();
 			break;
 		}
+	}
+
+	if (optind < argc) {
+		fprintf(stderr, "Non-option arguments are not supported.\n");
+		fprintf(stderr, "Please run with --help for usage options.\n");
+		return (EXIT_FAILURE);
 	}
 
 	// 2 hex characters correspond to 1 byte
