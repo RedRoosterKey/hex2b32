@@ -35,7 +35,10 @@ clean:
 	-@echo ' '
 
 test:
-	bash ../test/test.sh
+	bash ../scripts/test.sh
+	
+version:
+	bash ../scripts/version.sh
 
 .PHONY: all clean dependents
 .SECONDARY:

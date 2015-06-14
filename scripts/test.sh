@@ -103,6 +103,12 @@ testErrorOutput '-' "Invalid hexadecimal character '-'." '-e'
 testReturnValue '-' 1 '--input-errors'
 testErrorOutput '-' "Invalid hexadecimal character '-'." '--input-errors'
 
+# Test version
+testReturnValue '' 0 '-v'
+testOutput '' '1.0.0' '-v'
+testReturnValue '' 0 '--version'
+testOutput '' '1.0.0' '--version'
+
 # Test if padding is removed with short option
 testOutput '00'           'AA'         '-n'
 testOutput '0000'         'AAAA'       '-n'

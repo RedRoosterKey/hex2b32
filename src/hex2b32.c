@@ -1,7 +1,7 @@
 /**
  * @file    hex2b32.c
  * @author  RedRoosterKey
- * @version 0.0.1
+ * @version see version.h
  *
  * @section LICENSE
  *
@@ -46,8 +46,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-const char * VERSION = "0.0.1";
+#include "version.h"
 
 const char * HELP =
 		"Usage: hex2b32 [OPTION]... \n\
