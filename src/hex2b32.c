@@ -67,6 +67,10 @@ typedef enum {
 } RemainderMode;
 
 // AND with a byte to just get these bits
+const unsigned char LAST_THREE_BITS = 0x07;
+const unsigned char LAST_BIT = 0x01;
+const unsigned char LAST_FOUR_BITS = 0x0F;
+const unsigned char LAST_TWO_BITS = 0x03;
 const unsigned char FIRST_FIVE_BITS = 0xF8;
 const unsigned char FIRST_TWO_BITS = 0xC0;
 const unsigned char THIRD_TO_SEVENTH_BITS = 0x3E;
@@ -157,11 +161,11 @@ void processBits(RemainderMode * const mode, unsigned char * const leftover,
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
-		*leftover = byte << 5;
+		*leftover = byte;
 		*mode = THREE_BITS_LEFT;
 		break;
 	case THREE_BITS_LEFT:
-		index = ((FIRST_THREE_BITS & *leftover) >> 3)
+		index = ((LAST_THREE_BITS & *leftover) << 2)
 				| ((FIRST_TWO_BITS & byte) >> 6);
 		putchar(
 				upperCase ?
@@ -170,21 +174,19 @@ void processBits(RemainderMode * const mode, unsigned char * const leftover,
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
-		*leftover = byte << 7;
+		*leftover = byte;
 		*mode = ONE_BIT_LEFT;
 		break;
 	case ONE_BIT_LEFT:
-		index = ((FIRST_BIT & *leftover) >> 3)
-				| ((FIRST_FOUR_BITS & byte) >> 4);
+		index = ((LAST_BIT & *leftover) << 4) | ((FIRST_FOUR_BITS & byte) >> 4);
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
-		*leftover = byte << 4;
+		*leftover = byte;
 		*mode = FOUR_BITS_LEFT;
 		break;
 	case FOUR_BITS_LEFT:
-		index = ((FIRST_FOUR_BITS & *leftover) >> 3)
-				| ((FIRST_BIT & byte) >> 7);
+		index = ((LAST_FOUR_BITS & *leftover) << 1) | ((FIRST_BIT & byte) >> 7);
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
@@ -192,11 +194,11 @@ void processBits(RemainderMode * const mode, unsigned char * const leftover,
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
-		*leftover = byte << 6;
+		*leftover = byte;
 		*mode = TWO_BITS_LEFT;
 		break;
 	case TWO_BITS_LEFT:
-		index = ((FIRST_TWO_BITS & *leftover) >> 3)
+		index = ((LAST_TWO_BITS & *leftover) << 3)
 				| ((FIRST_THREE_BITS & byte) >> 5);
 		putchar(
 				upperCase ?
@@ -230,7 +232,7 @@ void processLastBits(const RemainderMode * const mode,
 	case NO_BITS_LEFT:
 		break;
 	case THREE_BITS_LEFT:
-		index = ((FIRST_THREE_BITS & *leftover) >> 5 << 2);
+		index = (LAST_THREE_BITS & *leftover) << 2;
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
@@ -238,7 +240,7 @@ void processLastBits(const RemainderMode * const mode,
 			puts("======");
 		break;
 	case ONE_BIT_LEFT:
-		index = ((FIRST_BIT & *leftover) >> 7 << 4);
+		index = (LAST_BIT & *leftover) << 4;
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
@@ -246,7 +248,7 @@ void processLastBits(const RemainderMode * const mode,
 			puts("====");
 		break;
 	case FOUR_BITS_LEFT:
-		index = ((FIRST_FOUR_BITS & *leftover) >> 4 << 1);
+		index = ((LAST_FOUR_BITS & *leftover) << 1);
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
@@ -254,7 +256,7 @@ void processLastBits(const RemainderMode * const mode,
 			puts("===");
 		break;
 	case TWO_BITS_LEFT:
-		index = ((FIRST_TWO_BITS & *leftover) >> 6 << 3);
+		index = ((LAST_TWO_BITS & *leftover) << 3);
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
