@@ -235,7 +235,7 @@ void processLastBits(const RemainderMode * const mode,
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		if (padding)
-			printf("======");
+			puts("======");
 		break;
 	case ONE_BIT_LEFT:
 		index = ((FIRST_BIT & *leftover) >> 7 << 4);
@@ -243,7 +243,7 @@ void processLastBits(const RemainderMode * const mode,
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		if (padding)
-			printf("====");
+			puts("====");
 		break;
 	case FOUR_BITS_LEFT:
 		index = ((FIRST_FOUR_BITS & *leftover) >> 4 << 1);
@@ -251,7 +251,7 @@ void processLastBits(const RemainderMode * const mode,
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
 		if (padding)
-			printf("===");
+			puts("===");
 		break;
 	case TWO_BITS_LEFT:
 		index = ((FIRST_TWO_BITS & *leftover) >> 6 << 3);
@@ -305,7 +305,7 @@ int main(int argc, char **argv) {
 			printf("%s\n", VERSION);
 			return (EXIT_SUCCESS);
 		case '?':
-			fprintf(stderr, "Please run with --help for usage options.\n");
+			fputs("Please run with --help for usage options.\n", stderr);
 			return (EXIT_FAILURE);
 			break;
 		default:
@@ -315,8 +315,8 @@ int main(int argc, char **argv) {
 	}
 
 	if (optind < argc) {
-		fprintf(stderr, "Non-option arguments are not supported.\n");
-		fprintf(stderr, "Please run with --help for usage options.\n");
+		fputs("Non-option arguments are not supported.\n", stderr);
+		fputs("Please run with --help for usage options.\n", stderr);
 		return (EXIT_FAILURE);
 	}
 
@@ -337,8 +337,8 @@ int main(int argc, char **argv) {
 		processBits(&mode, &leftover, byte, upperCase);
 	}
 	if (-1 != firstEOF && -1 == secondEOF) {
-		fprintf(stderr,
-				"Must provide an even number of hexadecimal characters.\n");
+		fputs("Must provide an even number of hexadecimal characters.\n",
+		stderr);
 		return (EXIT_FAILURE);
 	}
 	processLastBits(&mode, &leftover, outputPadding, upperCase);
