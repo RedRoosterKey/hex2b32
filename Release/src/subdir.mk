@@ -1,17 +1,9 @@
-################################################################################
-# Automatically-generated file. Do not edit!
-################################################################################
-
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/hex2b32.c 
 
 OBJS += \
 ./src/hex2b32.o 
-
-C_DEPS += \
-./src/hex2b32.d 
-
 
 # Each subdirectory must supply rules for building sources it contributes
 src/%.o: ../src/%.c

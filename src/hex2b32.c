@@ -43,12 +43,13 @@
  * | 0 bits left |         |        |        |        |         |
  * +-------------+----------------------------------------------+
  */
+
 #include <ctype.h>
 #include <getopt.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+
 #include "version.h"
 
 const char * HELP =
