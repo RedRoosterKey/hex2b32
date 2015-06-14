@@ -67,18 +67,18 @@ typedef enum {
 } RemainderMode;
 
 // AND with a byte to just get these bits
-const unsigned char LAST_THREE_BITS = 0x07;
-const unsigned char LAST_BIT = 0x01;
-const unsigned char LAST_FOUR_BITS = 0x0F;
-const unsigned char LAST_TWO_BITS = 0x03;
-const unsigned char FIRST_FIVE_BITS = 0xF8;
-const unsigned char FIRST_TWO_BITS = 0xC0;
-const unsigned char THIRD_TO_SEVENTH_BITS = 0x3E;
-const unsigned char FIRST_FOUR_BITS = 0xF0;
 const unsigned char FIRST_BIT = 0x80;
-const unsigned char SECOND_TO_SIXTH_BITS = 0x7C;
+const unsigned char FIRST_TWO_BITS = 0xC0;
 const unsigned char FIRST_THREE_BITS = 0xE0;
+const unsigned char FIRST_FOUR_BITS = 0xF0;
+const unsigned char FIRST_FIVE_BITS = 0xF8;
+const unsigned char SECOND_TO_SIXTH_BITS = 0x7C;
+const unsigned char THIRD_TO_SEVENTH_BITS = 0x3E;
 const unsigned char LAST_FIVE_BITS = 0x1F;
+const unsigned char LAST_FOUR_BITS = 0x0F;
+const unsigned char LAST_THREE_BITS = 0x07;
+const unsigned char LAST_TWO_BITS = 0x03;
+const unsigned char LAST_BIT = 0x01;
 
 // Convert from the index to the base32 encoding
 const char BASE_32[] = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
