@@ -98,10 +98,16 @@ Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT
 testOutput '-0-0---0-0-'  'AAAA===='
 
 # Test error on input
-testReturnValue '-' 1 '-e'
-testErrorOutput '-' "Invalid hexadecimal character '-'." '-e'
-testReturnValue '-' 1 '--input-errors'
-testErrorOutput '-' "Invalid hexadecimal character '-'." '--input-errors'
+testReturnValue 'G' 1 '-e'
+testErrorOutput 'G' "Invalid hexadecimal character 'G'." '-e'
+testReturnValue 'G' 1 '--input-errors'
+testErrorOutput 'G' "Invalid hexadecimal character 'G'." '--input-errors'
+
+# Test no error with valid input
+testOutput '0123456789ABCDEF' 'AERUKZ4JVPG66===' '-e'
+testReturnValue '0123456789ABCDEF' 0 '-e'
+testOutput '0123456789ABCDEF' 'AERUKZ4JVPG66===' '--input-errors'
+testReturnValue '0123456789ABCDEF' 0 '--input-errors'
 
 # Test if padding is removed with short option
 testOutput '00'           'AA'         '-n'

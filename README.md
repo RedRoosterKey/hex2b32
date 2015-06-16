@@ -8,7 +8,7 @@ Go into the Release directory and run the following command:
 ```shell
 make all && make test
 ```
-This will create a program called hex2b32 and test it with the scripts in the test directory.
+This will create a program called hex2b32 and execute test.sh in the scripts directory.
 If all the tests pass, you should be good to go.  A good start would be to read the help by running:
 ```shell
 ./hex2b32 --help

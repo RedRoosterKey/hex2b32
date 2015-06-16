@@ -221,6 +221,7 @@ void processBits(RemainderMode * const mode, unsigned char * const leftover,
 
 /**
  * Convert the leftover bits into a base32 character
+ * and output padding as specified
  *
  * @param mode a value indicating how many bits are usable in the leftover.
  *        This value will be updated when the function is called.
@@ -231,14 +232,14 @@ void processBits(RemainderMode * const mode, unsigned char * const leftover,
  * @return void
  */
 void processLastBits(const RemainderMode * const mode,
-		const unsigned char * const leftover, const bool padding,
+		const unsigned char leftover, const bool padding,
 		const bool upperCase) {
 	unsigned char index = 0;
 	switch (*mode) {
 	case NO_BITS_LEFT:
 		break;
 	case THREE_BITS_LEFT:
-		index = (LAST_THREE_BITS & *leftover) << 2;
+		index = (LAST_THREE_BITS & leftover) << 2;
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
@@ -246,7 +247,7 @@ void processLastBits(const RemainderMode * const mode,
 			puts("======");
 		break;
 	case ONE_BIT_LEFT:
-		index = (LAST_BIT & *leftover) << 4;
+		index = (LAST_BIT & leftover) << 4;
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
@@ -254,7 +255,7 @@ void processLastBits(const RemainderMode * const mode,
 			puts("====");
 		break;
 	case FOUR_BITS_LEFT:
-		index = ((LAST_FOUR_BITS & *leftover) << 1);
+		index = ((LAST_FOUR_BITS & leftover) << 1);
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
@@ -262,7 +263,7 @@ void processLastBits(const RemainderMode * const mode,
 			puts("===");
 		break;
 	case TWO_BITS_LEFT:
-		index = ((LAST_TWO_BITS & *leftover) << 3);
+		index = ((LAST_TWO_BITS & leftover) << 3);
 		putchar(
 				upperCase ?
 						BASE_32[(int) index] : tolower(BASE_32[(int) index]));
@@ -289,7 +290,7 @@ int main(int argc, char **argv) {
 	no_argument, 0, 'v' }, { 0, 0, 0, 0 } };
 
 	// Handle command line options
-	while (1) {
+	while (true) {
 		int option_index = 0;
 		short option = getopt_long(argc, argv, "ehlnv", long_options,
 				&option_index);
@@ -349,7 +350,7 @@ int main(int argc, char **argv) {
 		stderr);
 		return (EXIT_FAILURE);
 	}
-	processLastBits(&mode, &leftover, outputPadding, upperCase);
+	processLastBits(&mode, leftover, outputPadding, upperCase);
 	putchar('\n');
 	return (EXIT_SUCCESS);
 }
