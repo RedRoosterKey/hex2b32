@@ -1,7 +1,7 @@
 # hex2b32
 Simple terminal program using STDIN/STDOUT to convert hexadecimal to base32 (RFC 3548).
 
-https://tools.ietf.org/html/rfc3548
+[Request for Comments: 3548 - Base 32 Encoding](https://tools.ietf.org/html/rfc3548#section-5)
 
 # How to build
 Go into the Release directory and run the following command:
