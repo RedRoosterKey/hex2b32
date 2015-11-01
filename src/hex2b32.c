@@ -62,7 +62,7 @@ Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT\n\
     -l, --lower           output only lower case letters\n\
                           (default behavior is all upper case)\n\
     -n, --no-padding      omit trailing '=' symbols\n\
-    -v, --version         output version information and exit\n still bad help";
+    -v, --version         output version information and exit\n";
 
 // Indicating how many bits are in the leftover
 typedef enum {
