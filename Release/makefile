@@ -22,7 +22,7 @@ all: hex2b32
 hex2b32: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc  -o "hex2b32" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -o "hex2b32" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
