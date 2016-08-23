@@ -224,7 +224,6 @@ void processBits(RemainderMode * const mode, unsigned char * const leftover,
  * and output padding as specified
  *
  * @param mode a value indicating how many bits are usable in the leftover.
- *        This value will be updated when the function is called.
  * @param leftover contains any leftover bits from the previous conversion
  * @param padding a flag indicating if the output should have '=' padding
  * @param upperCase a flag indicating if the output should be in upper
