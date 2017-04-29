@@ -13,3 +13,5 @@ If all the tests pass, you should be good to go.  A good start would be to read 
 ```shell
 ./hex2b32 --help
 ```
+## Demo
+![gif](https://github.com/RedRoosterKey/hex2b32/blob/master/tty.gif?raw=true)
