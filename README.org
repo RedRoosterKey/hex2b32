@@ -1,17 +1,20 @@
-# hex2b32
+* hex2b32
 Simple terminal program using STDIN/STDOUT to convert hexadecimal to base32 (RFC 3548).
 
-[Request for Comments: 3548 - Base 32 Encoding](https://tools.ietf.org/html/rfc3548#section-5)
+[[https://tools.ietf.org/html/rfc3548#section-5][Request for Comments: 3548 - Base 32 Encoding]]
 
-# How to build
+* How to build
 Go into the Release directory and run the following command:
-```shell
+#+BEGIN_SRC bash
 make all && make test
-```
+#+END_SRC
+
 This will create a program called hex2b32 and execute test.sh in the scripts directory.
 If all the tests pass, you should be good to go.  A good start would be to read the help by running:
-```shell
+
+#+BEGIN_SRC bash
 ./hex2b32 --help
-```
-## Demo
-![gif](https://github.com/RedRoosterKey/hex2b32/blob/master/tty.gif?raw=true)
+#+END_SRC
+
+* Demo
+[[https://github.com/RedRoosterKey/hex2b32/blob/master/tty.gif?raw=true]]
