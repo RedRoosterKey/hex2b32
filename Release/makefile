@@ -28,12 +28,12 @@ hex2b32: $(OBJS) $(USER_OBJS)
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) hex2b32
+	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) hex2b32 src/hex2b32.d
 	-@echo ' '
 
 test:
 	bash ../scripts/test.sh
-	
+	bash ../scripts/base32ParityTest.sh
 version:
 	bash ../scripts/version.sh
 
