@@ -59,12 +59,12 @@ function testReturnValue() {
 for len in $(seq 1 1024)
 do
     raw=$(head -c ${len} /dev/urandom)
-    input=$(echo -n "${raw}" | xxd --cols ${len} --len ${len} -ps -u)
+    input=$(echo -n "${raw}" | xxd --cols ${len} --len ${len} -ps)
     # expected=$(echo -n "${input}" | xxd --revert -ps | base32 --wrap=0)
     expected=$(echo -n "${raw}" | base32 --wrap=0)
     
     testReturnValue ${input} 0 ''
-    testOutput "${input}" "${expected}" ""
+    testOutput "${input}" "${expected}" "--input-errors"
 done
 
 echo "${GREEN}ALL GOOD!${NC}"
