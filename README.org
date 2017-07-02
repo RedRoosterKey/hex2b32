@@ -1,7 +1,20 @@
 * hex2b32
-Simple terminal program using STDIN/STDOUT to convert hexadecimal to base32 (RFC 3548).
+Simple terminal program using STDIN/STDOUT to convert hexadecimal to base32 (RFC 4648).
 
 [[https://tools.ietf.org/html/rfc4648#page-8][Request for Comments: 4648 - Base 32 Encoding]]
+
+At the time this program was first written, there was no base32 conversion in coreutils.
+A few months after the first version of this program was completed, coreutils added a base32 conversion program to their suite.
+
+Full history on the coreutils implementation can be viewed [[https://bugzilla.redhat.com/show_bug.cgi?id=1250113]here]
+
+There are still some systems that have an older version of coreutils, but if you have a version of coreutils with the base32 encoder, this program is effectively equivalent to the command below:
+#+BEGIN_SRC bash
+xxd --revert -ps | base32 --wrap=0
+#+END_SRC
+
+I have recently added a parity script that compares the output of hex2b32 with the coreutils implementation.
+This gives me high confidence that this prior implementation works correctly.
 
 * How to build
 Go into the Release directory and run the following command:
