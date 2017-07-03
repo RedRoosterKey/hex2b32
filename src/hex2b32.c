@@ -23,9 +23,9 @@
  *
  * @section DESCRIPTION
  *
- * Convert hexadecimal into base32 according to RFC 3548.
+ * Convert hexadecimal into base32 according to RFC 4648.
  *
- * https://tools.ietf.org/html/rfc3548
+ * https://tools.ietf.org/html/rfc4648
  *
  * Converts 8 bit values into 5 bit values
  * Complete cycle occurs every 40 bits
@@ -54,7 +54,7 @@
 
 const char * const HELP =
 		"Usage: hex2b32 [OPTION]... \n\
-Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT\n\
+Inputs hexadecimal data from STDIN and outputs base32 (RFC 4648) to STDOUT\n\
 \n\
     -e, --input-errors    display first input error and exit with failure\n\
                           (default behavior is to ignore invalid input)\n\

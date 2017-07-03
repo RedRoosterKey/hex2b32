@@ -82,7 +82,7 @@ testErrorOutput 'F' 'Must provide an even number of hexadecimal characters.'
 
 # Test help output
 testOutput '' "Usage: hex2b32 [OPTION]... 
-Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT
+Inputs hexadecimal data from STDIN and outputs base32 (RFC 4648) to STDOUT
 
     -e, --input-errors    display first input error and exit with failure
                           (default behavior is to ignore invalid input)
@@ -92,7 +92,7 @@ Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT
     -n, --no-padding      omit trailing '=' symbols
     -v, --version         output version information and exit" '-h'
 testOutput '' "Usage: hex2b32 [OPTION]... 
-Inputs hexadecimal data from STDIN and outputs base32 (RFC 3548) to STDOUT
+Inputs hexadecimal data from STDIN and outputs base32 (RFC 4648) to STDOUT
 
     -e, --input-errors    display first input error and exit with failure
                           (default behavior is to ignore invalid input)
@@ -235,8 +235,8 @@ testOutput '65ccfb9d6668b4ebbc0c7221373a41dc02003a78e9c50e3e2369104193cc75e350be
 
 # Test version
 testReturnValue '' 0 '-v'
-testOutput '' '1.0.1' '-v'
+testOutput '' '1.0.2' '-v'
 testReturnValue '' 0 '--version'
-testOutput '' '1.0.1' '--version'
+testOutput '' '1.0.2' '--version'
 
 echo "${GREEN}ALL GOOD!${NC}"

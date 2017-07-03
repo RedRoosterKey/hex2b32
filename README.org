@@ -30,4 +30,4 @@ If all the tests pass, you should be good to go.  A good start would be to read 
 #+END_SRC
 
 * Demo
-[[https://github.com/RedRoosterKey/hex2b32/blob/master/tty.gif?raw=true]]
+ TODO
