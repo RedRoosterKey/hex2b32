@@ -17,8 +17,9 @@ I have recently added a parity script that compares the output of hex2b32 with t
 This gives me high confidence that this prior implementation works correctly.
 
 * How to build
-Go into the Release directory and run the following command:
+Run the following commands:
 #+BEGIN_SRC bash
+cd Release
 make all && make test
 #+END_SRC
 

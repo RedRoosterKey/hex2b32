@@ -1,4 +1,4 @@
-# /bin/bash
+#! /bin/bash
 set -e
 # set -v
 
@@ -6,22 +6,22 @@ echo Starting basic test
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 PROGRAM="${DIR}/../Release/hex2b32"
-RED=`tput -Txterm setaf 1`
-GREEN=`tput -Txterm setaf 2`
-NC=`tput -Txterm sgr0`
+RED=$(tput -Txterm setaf 1)
+GREEN=$(tput -Txterm setaf 2)
+NC=$(tput -Txterm sgr0)
 
 function testOutput() {
     in=${1}
     out=${2}
     options=${3}
-    value=`echo -n ${in} | ${PROGRAM} ${options}`
+    value=$(echo -n "${in}" | ${PROGRAM} ${options})
     if [ "${out}" != "${value}" ]
     then
         echo
         echo "${RED}For input \"${in}\" options \"${options}\""
         echo "Expected \"${out}\""
         echo " but got \"${value}\"${NC}"
-        return -1
+        return 255
     else
         echo -n "${GREEN}[OK]${NC} "
     fi
@@ -33,7 +33,7 @@ function testReturnValue() {
     rVal=${2}
     options=${3}
     set +e
-    echo -n ${in} | ${PROGRAM} ${options} > /dev/null 2>&1
+    echo -n "${in}" | ${PROGRAM} ${options} > /dev/null 2>&1
     value=$?
     set -e
     if [ "${rVal}" != "${value}" ]
@@ -42,7 +42,7 @@ function testReturnValue() {
         echo "${RED}For input \"${in}\" options \"${options}\""
         echo "Expected \"${rVal}\""
         echo " but got \"${value}\"${NC}"
-        return -1
+        return 255
     else
         echo -n "${GREEN}[OK]${NC} "
     fi
@@ -54,7 +54,7 @@ function testErrorOutput() {
     err=${2}
     options=${3}
     set +e
-    value=$((echo -n ${in} | ${PROGRAM} ${options}) 2>&1)
+    value=$( (echo -n "${in}" | ${PROGRAM} ${options} ) 2>&1)
     set -e
     if [ "${err}" != "${value}" ]
     then
@@ -62,7 +62,7 @@ function testErrorOutput() {
         echo "${RED}For input \"${in}\" options \"${options}\""
         echo "Expected error \"${err}\""
         echo " but got       \"${value}\"${NC}"
-        return -1
+        return 255
     else
         echo -n "${GREEN}[OK]${NC} "
     fi
